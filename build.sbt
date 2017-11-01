@@ -3,10 +3,10 @@ import org.scalajs.sbtplugin.cross.CrossProject
 
 // Convenient setting that allows writing `set scalaVersion := dotty.value` in sbt shell to switch from Scala to Dotty
 val dotty = settingKey[String]("dotty version")
-dotty in ThisBuild := "0.8.0-bin-20180323-5be1360-NIGHTLY"
+dotty in ThisBuild := dottyLatestNightlyBuild().get
 
 val collectionsScalaVersionSettings = Seq(
-  scalaVersion := "2.13.0-M2",
+  scalaVersion := dotty.value,
   crossScalaVersions := scalaVersion.value :: "2.12.4" :: dotty.value :: Nil
 )
 
@@ -186,3 +186,10 @@ val memoryBenchmark =
     )
 
 lazy val charts = inputKey[File]("Runs the benchmarks and produce charts")
+
+TaskKey[Unit]("dottyCompile") := {
+  compile.in(collectionsJVM, Test).value
+  compile.in(`collections-contrib-jvm`, Test).value
+  compile.in(junit, Test).value
+  ()
+}
