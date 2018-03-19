@@ -229,9 +229,9 @@ sealed class UnrolledBuffer[T](implicit val tag: ClassTag[T])
 }
 
 
-object UnrolledBuffer extends StrictOptimizedClassTagSeqFactory[UnrolledBuffer] { self =>
+object UnrolledBuffer extends StrictOptimizedClassTagSeqFactory[UnrolledBuffer] {
 
-  val untagged: SeqFactory[UnrolledBuffer] = new ClassTagSeqFactory.AnySeqDelegate(self)
+  val untagged: SeqFactory[UnrolledBuffer] = new ClassTagSeqFactory.AnySeqDelegate(this)
 
   def empty[A : ClassTag]: UnrolledBuffer[A] = new UnrolledBuffer[A]
 

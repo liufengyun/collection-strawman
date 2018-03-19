@@ -78,8 +78,8 @@ abstract class WrappedArray[T]
 
 /** A companion object used to create instances of `WrappedArray`.
   */
-object WrappedArray extends StrictOptimizedClassTagSeqFactory[WrappedArray] { self =>
-  val untagged: SeqFactory[WrappedArray] = new ClassTagSeqFactory.AnySeqDelegate(self)
+object WrappedArray extends StrictOptimizedClassTagSeqFactory[WrappedArray] {
+  val untagged: SeqFactory[WrappedArray] = new ClassTagSeqFactory.AnySeqDelegate(this)
 
   // This is reused for all calls to empty.
   private val EmptyWrappedArray  = new ofRef[AnyRef](new Array[AnyRef](0))

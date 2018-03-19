@@ -125,8 +125,8 @@ sealed abstract class ImmutableArray[+A]
   * @define coll immutable array
   * @define Coll `ImmutableArray`
   */
-object ImmutableArray extends StrictOptimizedClassTagSeqFactory[ImmutableArray] { self =>
-  val untagged: SeqFactory[ImmutableArray] = new ClassTagSeqFactory.AnySeqDelegate(self)
+object ImmutableArray extends StrictOptimizedClassTagSeqFactory[ImmutableArray] {
+  val untagged: SeqFactory[ImmutableArray] = new ClassTagSeqFactory.AnySeqDelegate(this)
 
   private[this] lazy val emptyImpl = new ImmutableArray.ofRef[Nothing](new Array[Nothing](0))
 
