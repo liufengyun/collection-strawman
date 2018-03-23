@@ -1,6 +1,8 @@
 package strawman
 package collection
 
+import annotation.unchecked.uncheckedVariance
+
 /**
   * A multidict whose keys are sorted
   * @tparam K the type of keys
@@ -20,7 +22,7 @@ trait SortedMultiDictOps[K, V, +CC[X, Y] <: MultiDict[X, Y], +C <: MultiDict[K, 
   extends MultiDictOps[K, V, MultiDict, C]
     with SortedOps[K, C] {
 
-  protected[this] type SortedMultiDictCC[K, V] = CC[K, V]
+  protected[this] type SortedMultiDictCC[K, V] = CC[K, V] @uncheckedVariance
 
   def sortedMultiMapFactory: SortedMapFactory[SortedMultiDictCC]
 

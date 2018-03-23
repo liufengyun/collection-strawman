@@ -24,7 +24,7 @@ trait SortedMultiSetOps[A, +CC[X] <: MultiSet[X], +C <: MultiSet[A]]
   extends MultiSetOps[A, MultiSet, C]
     with SortedOps[A, C] {
 
-  protected[this] type SortedIterableCC[X] = CC[X]
+  protected[this] type SortedIterableCC[X] = CC[X] @uncheckedVariance
 
   def sortedIterableFactory: SortedIterableFactory[SortedIterableCC]
 

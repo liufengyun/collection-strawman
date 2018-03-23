@@ -33,6 +33,6 @@ class ArrayOpsTest {
   @Test
   def reverseIterator: Unit = {
     val a = Array(1,2,3)
-    assertEquals(List(3,2,1), a.reverseIterator.toList)
+    assertEquals(List(3,2,1), a.reverseIterator().toList)
   }
 }

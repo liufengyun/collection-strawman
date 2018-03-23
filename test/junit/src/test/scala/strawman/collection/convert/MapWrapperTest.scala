@@ -60,7 +60,7 @@ class MapWrapperTest {
   
   // regression test for https://github.com/scala/bug/issues/10663
   @Test
-  def testHashCodeEqualsMatchesJavaMap() {
+  def testHashCodeEqualsMatchesJavaMap(): Unit = {
     import strawman.collection.JavaConverters._
 
     val jmap = new util.HashMap[String, String]()

@@ -1,5 +1,7 @@
 package strawman.collection
 
+import annotation.unchecked.uncheckedVariance
+
 /**
   * A multidict is a map that can associate a set of values to a given key.
   *
@@ -40,7 +42,7 @@ trait MultiDict[K, V]
 trait MultiDictOps[K, V, +CC[X, Y] <: MultiDict[X, Y], +C <: MultiDict[K, V]]
   extends IterableOps[(K, V), Iterable, C] {
 
-  protected[this] type MultiDictCC[K, V] = CC[K, V]
+  protected[this] type MultiDictCC[K, V] = CC[K, V] @uncheckedVariance
 
   def multiMapFactory: MapFactory[MultiDictCC]
 
