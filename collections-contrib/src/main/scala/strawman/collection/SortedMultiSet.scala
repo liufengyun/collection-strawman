@@ -62,25 +62,9 @@ trait SortedMultiSetOps[A, +CC[X] <: MultiSet[X], +C <: MultiSet[A]]
       until(next)
   }
 
-  override def withFilter(p: A => Boolean): SortedWithFilter = new SortedWithFilter(p)
+  override def withFilter(p: A => Boolean): SortedMultiSetOps.WithFilter[A, IterableCC, CC] =
+    new SortedMultiSetOps.WithFilter(this, p)
 
-  type SortedWithFilter = WithFilter
-
-/*
-  /** Specialize `WithFilter` for sorted collections
-    *
-    * @define coll sorted collection
-    */
-  class SortedWithFilter(p: A => Boolean) extends WithFilter(p) {
-
-    def map[B : Ordering](f: A => B): CC[B] = sortedIterableFactory.from(new View.Map(filtered, f))
-
-    def flatMap[B : Ordering](f: A => IterableOnce[B]): CC[B] = sortedIterableFactory.from(new View.FlatMap(filtered, f))
-
-    override def withFilter(q: A => Boolean): SortedWithFilter = new SortedWithFilter(a => p(a) && q(a))
-
-  }
-*/
   /** Builds a new sorted multiset by applying a function to all elements of this sorted multiset.
     *
     *  @param f      the function to apply to each element.
@@ -169,6 +153,30 @@ trait SortedMultiSetOps[A, +CC[X] <: MultiSet[X], +C <: MultiSet[A]]
 
   override def zipWithIndex: CC[(A, Int)] =
     sortedFromIterable(new View.ZipWithIndex(toIterable))
+
+}
+
+object SortedMultiSetOps {
+
+  /** Specialize `WithFilter` for sorted collections
+    *
+    * @define coll sorted collection
+    */
+  class WithFilter[A, +IterableCC[_], +CC[X] <: MultiSet[X]](
+    `this`: SortedMultiSetOps[A, CC, _] with IterableOps[A, IterableCC, _],
+    p: A => Boolean
+  ) extends IterableOps.WithFilter(`this`, p) {
+
+    def map[B : Ordering](f: A => B): CC[B] =
+      `this`.sortedIterableFactory.from(new View.Map(filtered, f))
+
+    def flatMap[B : Ordering](f: A => IterableOnce[B]): CC[B] =
+      `this`.sortedIterableFactory.from(new View.FlatMap(filtered, f))
+
+    override def withFilter(q: A => Boolean): WithFilter[A, IterableCC, CC] =
+      new WithFilter[A, IterableCC, CC](`this`, a => p(a) && q(a))
+
+  }
 
 }
 

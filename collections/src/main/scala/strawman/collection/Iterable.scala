@@ -318,26 +318,7 @@ trait IterableOps[+A, +CC[_], +C] extends Any with IterableOnce[A] with Iterable
     *             All these operations apply to those elements of this $coll
     *             which satisfy the predicate `p`.
     */
-  def withFilter(p: A => Boolean): collection.WithFilter[A, CC] = new WithFilter(p)
-
-  /** A template trait that contains just the `map`, `flatMap`, `foreach` and `withFilter` methods
-    * of trait `Iterable`.
-    *
-    * @define coll iterable collection
-    */
-  class WithFilter(p: A => Boolean) extends collection.WithFilter[A, CC] {
-
-    protected[this] def filtered: View.Filter[A @uncheckedVariance] = new View.Filter(IterableOps.this, p, isFlipped = false)
-
-    def map[B](f: A => B): CC[B] = iterableFactory.from(new View.Map(filtered, f))
-
-    def flatMap[B](f: A => IterableOnce[B]): CC[B] = iterableFactory.from(new View.FlatMap(filtered, f))
-
-    def foreach[U](f: A => U): Unit = filtered.foreach(f)
-
-    def withFilter(q: A => Boolean): WithFilter = new WithFilter(a => p(a) && q(a))
-
-  }
+  def withFilter(p: A => Boolean): collection.WithFilter[A, CC] = new IterableOps.WithFilter(this, p)
 
   /** A pair of, first, all elements that satisfy prediacte `p` and, second,
     *  all elements that do not. Interesting because it splits a collection in two.
@@ -711,6 +692,39 @@ trait IterableOps[+A, +CC[_], +C] extends Any with IterableOnce[A] with Iterable
     val it = Iterator.iterate(toIterable)(f).takeWhile(x => !x.isEmpty)
     (it ++ Iterator(Iterable.empty)).map(fromSpecificIterable)
   }
+}
+
+object IterableOps {
+
+  /** A trait that contains just the `map`, `flatMap`, `foreach` and `withFilter` methods
+    * of trait `Iterable`.
+    *
+    * @tparam A Element type (e.g. `Int`)
+    * @tparam CC Collection type constructor (e.g. `List`)
+    *
+    * @define coll collection
+    */
+  class WithFilter[+A, +CC[_]](
+    `this`: IterableOps[A, CC, _],
+    p: A => Boolean
+  ) extends collection.WithFilter[A, CC] {
+
+    protected[this] def filtered: Iterable[A] =
+      new View.Filter(`this`, p, isFlipped = false)
+
+    def map[B](f: A => B): CC[B] =
+      `this`.iterableFactory.from(new View.Map(filtered, f))
+
+    def flatMap[B](f: A => IterableOnce[B]): CC[B] =
+      `this`.iterableFactory.from(new View.FlatMap(filtered, f))
+
+    def foreach[U](f: A => U): Unit = filtered.foreach(f)
+
+    def withFilter(q: A => Boolean): WithFilter[A, CC] =
+      new WithFilter(`this`, (a: A) => p(a) && q(a))
+
+  }
+
 }
 
 object Iterable extends IterableFactory.Delegate[Iterable](immutable.Iterable) {
