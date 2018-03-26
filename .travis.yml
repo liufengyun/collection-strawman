@@ -2,7 +2,7 @@ language: scala
 jdk: oraclejdk8
 script:
   - sbt ++2.12.4 memoryBenchmark/compile test ++2.13.0-M2 timeBenchmark/compile test
-  - sbt ++0.8.0-bin-20180323-5be1360-NIGHTLY test junit/test:compile
+  - sbt ++0.8.0-bin-20180323-5be1360-NIGHTLY test junit/test:compile collections-contribJVM/compile
   - sbt ++2.13.0-M2 collections-contribJVM/test junit/test scalacheck/test
   - sbt ++2.12.4 collectionsJS/test ++2.13.0-M2 collectionsJS/test collections-contribJS/test
 before_script:
