@@ -132,7 +132,7 @@ object SortedMultiDictOps {
   class WithFilter[K, V, +IterableCC[_], +MultiDictCC[X, Y] <: MultiDict[X, Y], +CC[X, Y] <: MultiDict[X, Y]](
     `this`: SortedMultiDictOps[K, V, CC, _] with MultiDictOps[K, V, MultiDictCC, _] with IterableOps[(K, V), IterableCC, _],
     p: ((K, V)) => Boolean
-  ) extends MultiDictOps.WithFilter(`this`, p) {
+  ) extends MultiDictOps.WithFilter[K, V, IterableCC, MultiDictCC](`this`, p) {
 
     def map[L : Ordering, W](f: ((K, V)) => (L, W)): CC[L, W] =
       `this`.sortedMultiMapFactory.from(new View.Map(filtered, f))
