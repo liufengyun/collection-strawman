@@ -189,7 +189,8 @@ lazy val charts = inputKey[File]("Runs the benchmarks and produce charts")
 
 TaskKey[Unit]("dottyCompile") := {
   compile.in(collectionsJVM, Test).value
-  compile.in(`collections-contrib-jvm`, Test).value
+  // compile.in(`collections-contrib-jvm`, Test).value // tests crash the compiler. See dotty#4188
+  compile.in(`collections-contrib-jvm`, Compile).value
   compile.in(junit, Test).value
   ()
 }
