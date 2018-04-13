@@ -54,8 +54,8 @@ val commonSettings = Seq(
 val disablePublishing = Seq(
   publishArtifact := false,
   // The above is enough for Maven repos but it doesn't prevent publishing of ivy.xml files
-  publish := (),
-  publishLocal := ()
+  publish := { () },
+  publishLocal := { () }
 )
 
 // Disable cross-compilation with Dotty.
@@ -142,7 +142,7 @@ val scalacheck = project.in(file("test") / "scalacheck")
     fork in Test := true,
     javaOptions in Test += "-Xss1M",
     libraryDependencies ++= Seq(
-      ("org.scalacheck" %% "scalacheck" % "1.13.5" % Test).withDottyCompat()
+      ("org.scalacheck" %% "scalacheck" % "1.13.5" % Test).withDottyCompat(scalaVersion.value)
     )
   )
 
@@ -172,7 +172,7 @@ val memoryBenchmark =
     .dependsOn(collectionsJVM)
     .settings(commonSettings ++ disablePublishing)
     .settings(
-      libraryDependencies += ("org.spire-math" %% "jawn-ast" % "0.10.4").withDottyCompat(),
+      libraryDependencies += ("org.spire-math" %% "jawn-ast" % "0.10.4").withDottyCompat(scalaVersion.value),
       charts := Def.inputTaskDyn {
         val targetDir = crossTarget.value
         val report = targetDir / "report.json"
